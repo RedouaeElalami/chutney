@@ -397,7 +397,6 @@ public class OrientComposableStepRepositoryTest extends AbstractOrientDatabaseTe
         assertThat(foundParentFStep.steps.get(2).executionParameters).containsExactlyEntriesOf(secondMiddleParentInstanceDataSet);
     }
 
-    @Disabled
     @Test
     public void should_update_all_parents_relations_when_changing_default_parameters() {
         // Given
