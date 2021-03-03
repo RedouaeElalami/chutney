@@ -25,9 +25,12 @@ import com.orientechnologies.orient.core.record.OEdge;
 import com.orientechnologies.orient.core.record.OElement;
 import com.orientechnologies.orient.core.record.ORecord;
 import com.orientechnologies.orient.core.record.OVertex;
+import java.util.AbstractMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -36,7 +39,7 @@ public class StepVertex {
     private final OVertex vertex;
     private final List<ComposableStep> steps;
     private final Map<String, String> defaultParameters;
-    private final Map<String, Pair<String, Boolean>> overrideExecutionParameters;
+    public final Map<String, Pair<String, Boolean>> overrideExecutionParameters;
 
     private StepVertex(OVertex vertex, List<ComposableStep> steps, Map<String, String> defaultParameters, Map<String, Pair<String, Boolean>> overrideExecutionParameters) {
         this.vertex = vertex;
@@ -90,7 +93,7 @@ public class StepVertex {
             .collect(toList());
 
         vertices.stream().forEach(v ->
-            vertex.addEdge(v.vertex, GE_STEP_CLASS).setProperty(GE_STEP_CLASS_PROPERTY_PARAMETERS, v.executionParameters())
+            vertex.addEdge(v.vertex, GE_STEP_CLASS).setProperty(GE_STEP_CLASS_PROPERTY_PARAMETERS, v.overrideExecutionParameters)
         );
     }
 
@@ -178,8 +181,10 @@ public class StepVertex {
         return new StepVertexBuilder();
     }
 
-    public Map<String, Pair<String, Boolean>> executionParameters() {
-        return this.overrideExecutionParameters;
+    public Map<String, String> executionParameters() {
+        return this.overrideExecutionParameters.entrySet().stream()
+            .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), e.getValue().getKey()))
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (v1, v2) -> v1, LinkedHashMap::new));
     }
 
     public static class StepVertexBuilder {

@@ -8,12 +8,8 @@ import com.chutneytesting.design.api.scenario.compose.dto.ComposableStepDto;
 import com.chutneytesting.design.api.scenario.compose.dto.ImmutableComposableStepDto;
 import com.chutneytesting.design.domain.scenario.compose.ComposableStep;
 import com.chutneytesting.tools.ui.KeyValue;
-import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
 import org.apache.groovy.util.Maps;
 import org.junit.jupiter.api.Test;
 
@@ -142,10 +138,7 @@ public class ComposableStepMapperTest {
 
         // Then
         assertThat(composableStepDto.defaultParameters()).containsExactlyElementsOf(KeyValue.fromMap(fStep.defaultParameters));
-        assertThat(composableStepDto.executionParameters()).containsExactlyElementsOf(KeyValue.fromMap(fStep.executionParameters.entrySet().stream()
-            .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), e.getValue().getKey()))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (v1, v2) -> v1, LinkedHashMap::new))
-        ));
+        assertThat(composableStepDto.executionParameters()).containsExactlyElementsOf(KeyValue.fromMap(fStep.executionParameters()));
     }
 
     @Test
@@ -196,9 +189,6 @@ public class ComposableStepMapperTest {
         assertThat(step.steps.get(0).implementation.get()).isEqualTo(TECHNICAL_CONTENT);
         assertThat(step.steps.get(1).name).isEqualTo(dto.steps().get(1).name());
         assertThat(step.defaultParameters).containsAllEntriesOf(KeyValue.toMap(dto.defaultParameters()));
-        assertThat(step.executionParameters.entrySet().stream()
-            .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), e.getValue().getKey()))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
-        ).containsAllEntriesOf(KeyValue.toMap(dto.executionParameters()));
+        assertThat(step.executionParameters()).containsAllEntriesOf(KeyValue.toMap(dto.executionParameters()));
     }
 }

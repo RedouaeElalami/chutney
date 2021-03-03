@@ -6,10 +6,7 @@ import com.chutneytesting.design.infra.storage.scenario.compose.wrapper.StepVert
 import com.orientechnologies.orient.core.db.ODatabaseSession;
 import com.orientechnologies.orient.core.record.OElement;
 import com.orientechnologies.orient.core.record.OVertex;
-import java.util.AbstractMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -40,10 +37,7 @@ public class OrientComposableStepMapper {
             .withTags(vertex.tags())
             .withImplementation(vertex.implementation())
             .withDefaultParameters(vertex.defaultParameters())
-            .withExecutionParameters(vertex.executionParameters().entrySet().stream()
-                .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), e.getValue().getKey()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (v1, v2) -> v1, LinkedHashMap::new))
-            );
+            .withExecutionParameters(vertex.executionParameters());
 
         OElement strategy = vertex.strategy();
         Optional.ofNullable(strategy).ifPresent( s ->

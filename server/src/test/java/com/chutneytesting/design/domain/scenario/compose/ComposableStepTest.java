@@ -2,14 +2,8 @@ package com.chutneytesting.design.domain.scenario.compose;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.AbstractMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.groovy.util.Maps;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -65,15 +59,10 @@ public class ComposableStepTest {
             .build();
 
         // Then
-        assertThat(dodo(step.executionParameters)).isEqualTo(Maps.of(
+        assertThat(step.executionParameters()).isEqualTo(Maps.of(
             "dont_move_up", "has_default_value",
             "leaf_move_up", ""
         ));
-    }
-
-    private Map<String, String> dodo(Map<String, Pair<String, Boolean>> executionParameters) {
-        return executionParameters.entrySet().stream()
-            .collect(toMap(Map.Entry::getKey, e -> e.getValue().getKey(), (v1, v2) -> v1, LinkedHashMap::new));
     }
 
     @Test
@@ -92,10 +81,7 @@ public class ComposableStepTest {
             .build();
 
         assertThat(parent.defaultParameters).isEmpty();
-        assertThat(parent.executionParameters.entrySet().stream()
-            .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), e.getValue().getKey()))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
-        ).containsEntry("move_up", "");
+        assertThat(parent.executionParameters()).containsEntry("move_up", "");
     }
 
     @Test
@@ -123,7 +109,7 @@ public class ComposableStepTest {
             .build();
 
 
-        assertThat(dodo(parent.executionParameters)).isEqualTo(Maps.of(
+        assertThat(parent.executionParameters()).isEqualTo(Maps.of(
             "leaf_move_up", "",
             "substep_move_up", "",
             "parent_param", "has_default_value"
@@ -149,7 +135,7 @@ public class ComposableStepTest {
             ))
             .build();
 
-        assertThat(dodo(parent.executionParameters)).isEqualTo(Maps.of(
+        assertThat(parent.executionParameters()).isEqualTo(Maps.of(
             "dont_move_up", ""
         ));
     }
