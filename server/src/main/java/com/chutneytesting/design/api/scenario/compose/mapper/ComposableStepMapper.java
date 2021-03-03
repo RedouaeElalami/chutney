@@ -10,8 +10,11 @@ import com.chutneytesting.design.api.scenario.compose.dto.ImmutableStrategy;
 import com.chutneytesting.design.domain.scenario.compose.ComposableStep;
 import com.chutneytesting.design.domain.scenario.compose.Strategy;
 import com.chutneytesting.tools.ui.KeyValue;
+import java.util.AbstractMap;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +37,10 @@ public class ComposableStepMapper {
 
         builder.strategy(toDto(composableStep.strategy));
 
-        builder.addAllExecutionParameters(KeyValue.fromMap(composableStep.executionParameters));
+        builder.addAllExecutionParameters(KeyValue.fromMap(composableStep.executionParameters.entrySet().stream()
+            .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), e.getValue().getKey()))
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (v1, v2) -> v1, LinkedHashMap::new))
+        ));
 
         return builder.build();
     }

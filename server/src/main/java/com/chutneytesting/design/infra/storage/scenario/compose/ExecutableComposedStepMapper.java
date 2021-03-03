@@ -3,7 +3,10 @@ package com.chutneytesting.design.infra.storage.scenario.compose;
 import com.chutneytesting.design.domain.scenario.compose.ComposableStep;
 import com.chutneytesting.execution.domain.scenario.composed.ExecutableComposedStep;
 import com.chutneytesting.execution.domain.scenario.composed.StepImplementation;
+import java.util.AbstractMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
@@ -30,7 +33,10 @@ public class ExecutableComposedStepMapper {
             .withSteps(composableToExecutable(fs.steps))
             .withImplementation(toStepImplementation(fs.implementation))
             .withParameters(fs.defaultParameters)
-            .withExecutionParameters(fs.executionParameters)
+            .withExecutionParameters(fs.executionParameters.entrySet().stream()
+                .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), e.getValue().getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (v1, v2) -> v1, LinkedHashMap::new))
+            )
             .build();
     }
 
