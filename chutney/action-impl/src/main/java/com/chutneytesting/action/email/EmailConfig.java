@@ -7,6 +7,7 @@ public class EmailConfig {
     private final int port;
     private final String username;
     private final String password;
+    private final String appPassword;
     private final boolean useTls;
     private final boolean useSsl;
 
@@ -15,6 +16,7 @@ public class EmailConfig {
         this.port = target.numericProperty("smtp.port").map(Number::intValue).orElse(target.port());
         this.username = target.user().orElse("");
         this.password = target.userPassword().orElse("");
+        this.appPassword = target.property("smtp.appPassword").orElse("");
         this.useTls = target.booleanProperty("smtp.tls").orElse(true);
         this.useSsl = target.booleanProperty("smtp.ssl").orElse(false);
     }
@@ -23,6 +25,10 @@ public class EmailConfig {
     public int getPort() { return port; }
     public String getUsername() { return username; }
     public String getPassword() { return password; }
+    public String getAppPassword() { return appPassword; }
     public boolean isUseTls() { return useTls; }
     public boolean isUseSsl() { return useSsl; }
+
+    public boolean hasAppPassword() { return !appPassword.isEmpty(); }
+    public boolean hasUsernameAndPassword() { return !username.isEmpty() && !password.isEmpty(); }
 }

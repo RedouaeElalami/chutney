@@ -36,6 +36,11 @@ public class SendMailAction implements Action {
 
     @Override
     public ActionExecutionResult execute() {
+        if (!config.hasAppPassword() && !config.hasUsernameAndPassword()) {
+            logger.error("Authentication configuration error: No valid authentication method provided");
+            return ActionExecutionResult.ko();
+        }
+
         try {
             Properties props = new Properties();
             props.put("mail.smtp.auth", "true");
@@ -46,7 +51,11 @@ public class SendMailAction implements Action {
 
             Session session = Session.getInstance(props, new jakarta.mail.Authenticator() {
                 protected jakarta.mail.PasswordAuthentication getPasswordAuthentication() {
-                    return new jakarta.mail.PasswordAuthentication(config.getUsername(), config.getPassword());
+                    if (config.hasAppPassword()) {
+                        return new jakarta.mail.PasswordAuthentication(config.getUsername(), config.getAppPassword());
+                    } else {
+                        return new jakarta.mail.PasswordAuthentication(config.getUsername(), config.getPassword());
+                    }
                 }
             });
 
