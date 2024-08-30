@@ -97,4 +97,4 @@ com.chutneytesting.action.micrometer.MicrometerSummaryAction
 com.chutneytesting.action.radius.RadiusAuthenticateAction
 com.chutneytesting.action.radius.RadiusAccountingAction
 
-com.chutneytesting.action.email.SendEmailAction
+com.chutneytesting.action.email.SendMailAction
