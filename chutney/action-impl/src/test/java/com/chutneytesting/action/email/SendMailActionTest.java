@@ -38,19 +38,19 @@ class SendMailActionTest {
     }
 
     @Test
-    void should_return_success_when_email_sent_successfully_with_username_and_password() throws Exception {
+    void should_return_success_when_email_sent_successfully_with_username_and_password() {
         setupUsernameAndPassword();
         testSuccessfulEmailSend();
     }
 
     @Test
-    void should_return_success_when_email_sent_successfully_with_app_password() throws Exception {
+    void should_return_success_when_email_sent_successfully_with_app_password() {
         setupAppPassword();
         testSuccessfulEmailSend();
     }
 
     @Test
-    void should_return_failure_when_email_sending_fails() throws Exception {
+    void should_return_failure_when_email_sending_fails() {
         setupUsernameAndPassword();
         try (MockedStatic<Transport> mockedTransport = mockStatic(Transport.class)) {
             mockedTransport.when(() -> Transport.send(any())).thenThrow(new jakarta.mail.MessagingException("SMTP server unavailable"));
@@ -110,7 +110,7 @@ class SendMailActionTest {
         );
     }
 
-    private void testSuccessfulEmailSend() throws Exception {
+    private void testSuccessfulEmailSend() {
         try (MockedStatic<Transport> mockedTransport = mockStatic(Transport.class)) {
             mockedTransport.when(() -> Transport.send(any())).thenAnswer(invocation -> null);
 

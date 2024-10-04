@@ -1,6 +1,7 @@
 package com.chutneytesting.action.email;
 
 import com.chutneytesting.action.spi.injectable.Target;
+import javax.annotation.Nonnull;
 
 public class EmailConfig {
     private final String host;
@@ -21,14 +22,39 @@ public class EmailConfig {
         this.useSsl = target.booleanProperty("smtp.ssl").orElse(false);
     }
 
-    public String getHost() { return host; }
-    public int getPort() { return port; }
-    public String getUsername() { return username; }
-    public String getPassword() { return password; }
-    public String getAppPassword() { return appPassword; }
-    public boolean isUseTls() { return useTls; }
-    public boolean isUseSsl() { return useSsl; }
+    public String getHost() {
+        return host;
+    }
 
-    public boolean hasAppPassword() { return !appPassword.isEmpty(); }
-    public boolean hasUsernameAndPassword() { return !username.isEmpty() && !password.isEmpty(); }
+    public int getPort() {
+        return port;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getAppPassword() {
+        return appPassword;
+    }
+
+    public boolean isUseTls() {
+        return useTls;
+    }
+
+    public boolean isUseSsl() {
+        return useSsl;
+    }
+
+    public boolean hasAppPassword() {
+        return !appPassword.isEmpty();
+    }
+
+    public boolean hasUsernameAndPassword() {
+        return !username.isEmpty() && !password.isEmpty();
+    }
 }

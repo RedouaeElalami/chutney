@@ -1,5 +1,9 @@
 package com.chutneytesting.action.email;
 
+import static com.chutneytesting.action.spi.validation.ActionValidatorsUtils.notBlankStringValidation;
+import static com.chutneytesting.action.spi.validation.ActionValidatorsUtils.targetValidation;
+import static com.chutneytesting.action.spi.validation.Validator.getErrorsFrom;
+
 import com.chutneytesting.action.spi.Action;
 import com.chutneytesting.action.spi.ActionExecutionResult;
 import com.chutneytesting.action.spi.injectable.Input;
@@ -7,10 +11,12 @@ import com.chutneytesting.action.spi.injectable.Logger;
 import com.chutneytesting.action.spi.injectable.Target;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
+import jakarta.mail.PasswordAuthentication;
 import jakarta.mail.Session;
 import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import java.util.List;
 import java.util.Properties;
 
 public class SendMailAction implements Action {
@@ -18,6 +24,7 @@ public class SendMailAction implements Action {
     private final String to;
     private final String subject;
     private final String body;
+    private final Target target;
     private final EmailConfig config;
     private final Logger logger;
 
@@ -30,8 +37,19 @@ public class SendMailAction implements Action {
         this.to = to;
         this.subject = subject;
         this.body = body;
+        this.target = target;
         this.config = new EmailConfig(target);
         this.logger = logger;
+    }
+
+    @Override
+    public List<String> validateInputs() {
+        return getErrorsFrom(
+            notBlankStringValidation(config.getHost(), "host"),
+            notBlankStringValidation(config.getUsername(), "username"),
+            notBlankStringValidation(String.valueOf(config.getPort()), "port"),
+            targetValidation(target)
+        );
     }
 
     @Override
@@ -52,9 +70,9 @@ public class SendMailAction implements Action {
             Session session = Session.getInstance(props, new jakarta.mail.Authenticator() {
                 protected jakarta.mail.PasswordAuthentication getPasswordAuthentication() {
                     if (config.hasAppPassword()) {
-                        return new jakarta.mail.PasswordAuthentication(config.getUsername(), config.getAppPassword());
+                        return new PasswordAuthentication(config.getUsername(), config.getAppPassword());
                     } else {
-                        return new jakarta.mail.PasswordAuthentication(config.getUsername(), config.getPassword());
+                        return new PasswordAuthentication(config.getUsername(), config.getPassword());
                     }
                 }
             });
